@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CourseSim – Login</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand">
+        <div class="logo">CE</div>
+        <div>
+          <h1>CourseSim</h1>
+          <p>Student Portal</p>
+        </div>
+      </div>
+
+      <h2>Login</h2>
+      <input id="loginId"       type="text"     placeholder="Student ID  e.g. 2025-0001-A" />
+      <div class="password-wrapper">
+        <input id="loginPassword" type="password" placeholder="Password" />
+        <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">Show</button>
+      </div>
+      <button onclick="login()">Login</button>
+      <p id="authMessage"></p>
+
+      <hr />
+
+      <p class="small">No account yet? <a href="register.html">Register here</a></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

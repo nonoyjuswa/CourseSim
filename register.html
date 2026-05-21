@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CourseSim – Register</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="login-page">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand">
+        <div class="logo">CE</div>
+        <div>
+          <h1>CourseSim</h1>
+          <p>Student Portal</p>
+        </div>
+      </div>
+
+      <h2>Create Account</h2>
+
+      <div id="generatedId" class="id-display"></div>
+      <p class="id-hint" id="idHint" style="display:none;">
+        Please save your Student ID — you will need it to log in.
+      </p>
+
+      <input id="regName"     type="text"     placeholder="Full name" />
+      <div class="password-wrapper">
+        <input id="regPassword" type="password" placeholder="Password (min. 6 characters)" />
+        <button type="button" class="toggle-password" onclick="togglePassword('regPassword', this)">Show</button>
+      </div>
+
+      <button onclick="registerAccount()">Create Account</button>
+      <p id="authMessage"></p>
+
+      <hr />
+
+      <p class="small">Already have an account? <a href="index.html">Login here</a></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    /* Show the id-hint when the ID box appears */
+    const observer = new MutationObserver(() => {
+      const idBox  = document.getElementById('generatedId');
+      const hint   = document.getElementById('idHint');
+      if (idBox && idBox.style.display !== 'none') {
+        hint.style.display = 'block';
+      }
+    });
+    observer.observe(document.getElementById('generatedId'), { attributes: true });
+  </script>
+</body>
+</html>
