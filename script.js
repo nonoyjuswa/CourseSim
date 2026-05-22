@@ -1,5 +1,5 @@
 /* =====================================================
-   CourseSim – script.js
+   CourseSim – script.js (with localStorage Database)
    ===================================================== */
 
 /* ── OOP Classes ──────────────────────────────────── */
@@ -69,6 +69,76 @@ const courses = [
 
 const students   = [];
 const enrollments = [];
+
+/* ── LocalStorage Database Functions ───────────────── */
+
+function saveToDatabase() {
+  try {
+    // Save students with their course codes (not object references)
+    const studentsData = students.map(s => ({
+      name: s.name,
+      enrolledCourses: s.enrolledCourses.map(c => c.code)
+    }));
+
+    // Save enrollments with student names and course codes
+    const enrollmentsData = enrollments.map(e => ({
+      studentName: e.student.name,
+      courseCode: e.course.code,
+      grade: e.grade
+    }));
+
+    localStorage.setItem("cs_students", JSON.stringify(studentsData));
+    localStorage.setItem("cs_enrollments", JSON.stringify(enrollmentsData));
+    
+    console.log("✓ Data saved to localStorage");
+  } catch (error) {
+    console.error("Error saving to localStorage:", error);
+  }
+}
+
+function loadFromDatabase() {
+  try {
+    // Load students
+    const studentsData = JSON.parse(localStorage.getItem("cs_students") || "[]");
+    
+    studentsData.forEach(data => {
+      const student = new Student(data.name);
+      
+      // Re-link course objects
+      data.enrolledCourses.forEach(courseCode => {
+        const course = findCourse(courseCode);
+        if (course) {
+          student.enrolledCourses.push(course);
+          if (!course.students.includes(student)) {
+            course.students.push(student);
+          }
+        }
+      });
+      
+      students.push(student);
+    });
+
+    // Load enrollments
+    const enrollmentsData = JSON.parse(localStorage.getItem("cs_enrollments") || "[]");
+    
+    enrollmentsData.forEach(data => {
+      const student = findStudent(data.studentName);
+      const course = findCourse(data.courseCode);
+      
+      if (student && course) {
+        const enrollment = new Enrollment(student, course);
+        enrollment.grade = data.grade;
+        enrollments.push(enrollment);
+      }
+    });
+
+    console.log("✓ Data loaded from localStorage");
+    console.log(`  Students: ${students.length}`);
+    console.log(`  Enrollments: ${enrollments.length}`);
+  } catch (error) {
+    console.error("Error loading from localStorage:", error);
+  }
+}
 
 /* ── Helpers ──────────────────────────────────────── */
 
@@ -284,6 +354,9 @@ function enrollStudent() {
 
   course.addStudent(student);
   enrollments.push(new Enrollment(student, course));
+  
+  saveToDatabase(); // Save to localStorage
+  
   setMessage(`✓ ${student.name} enrolled in ${course.code}.`, "#86efac");
   renderCourses();
   renderStudents();
@@ -306,6 +379,8 @@ function dropStudent() {
   const index = enrollments.indexOf(enrollment);
   if (index > -1) enrollments.splice(index, 1);
 
+  saveToDatabase(); // Save to localStorage
+
   setMessage(`✓ ${student.name} dropped from ${course.code}.`, "#86efac");
   renderCourses();
   renderStudents();
@@ -318,7 +393,7 @@ function assignGrade() {
   const courseCode  = getCourseInput();
   const gradeEl     = document.getElementById("gradeInput");
   const raw         = gradeEl ? gradeEl.value.trim() : "";
-  const grade       = Number(raw);   // FIX: was comparing string < 0
+  const grade       = Number(raw);
 
   if (!studentName || !courseCode) return setMessage("Enter student name and course code first.");
 
@@ -333,6 +408,9 @@ function assignGrade() {
     return setMessage("Enter a valid grade from 0 to 100.");
 
   enrollment.assignGrade(grade);
+  
+  saveToDatabase(); // Save to localStorage
+  
   setMessage(`✓ Grade ${grade} assigned to ${student.name} for ${course.code}.`, "#86efac");
   renderStudents();
 }
@@ -388,6 +466,7 @@ function login() {
 /* ── Init ─────────────────────────────────────────── */
 
 (function init() {
+  loadFromDatabase();  // Load data from localStorage first
   syncUserUI();
   renderCourses();
   renderStudents();
