@@ -11,13 +11,10 @@
     <div class="auth-card">
       <div class="brand">
         <div class="logo">CE</div>
-        <div>
-          <h1>CourseSim</h1>
-          <p>Student Portal</p>
-        </div>
+        <div><h1>CourseSim</h1><p>Student Portal</p></div>
       </div>
 
-      <h2>Create Account</h2>
+      <h2>Create Student Account</h2>
 
       <div id="generatedId" class="id-display"></div>
       <p class="id-hint" id="idHint" style="display:none;">
@@ -34,20 +31,16 @@
       <p id="authMessage"></p>
 
       <hr />
-
       <p class="small">Already have an account? <a href="index.html">Login here</a></p>
     </div>
   </div>
 
   <script src="script.js"></script>
   <script>
-    /* Show the id-hint when the ID box appears */
     const observer = new MutationObserver(() => {
-      const idBox  = document.getElementById('generatedId');
-      const hint   = document.getElementById('idHint');
-      if (idBox && idBox.style.display !== 'none') {
-        hint.style.display = 'block';
-      }
+      const idBox = document.getElementById('generatedId');
+      const hint  = document.getElementById('idHint');
+      if (idBox && idBox.style.display !== 'none') hint.style.display = 'block';
     });
     observer.observe(document.getElementById('generatedId'), { attributes: true });
   </script>

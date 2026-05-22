@@ -11,14 +11,23 @@
     <div class="auth-card">
       <div class="brand">
         <div class="logo">CE</div>
-        <div>
-          <h1>CourseSim</h1>
-          <p>Student Portal</p>
-        </div>
+        <div><h1>CourseSim</h1><p>Student Portal</p></div>
       </div>
 
       <h2>Login</h2>
-      <input id="loginId"       type="text"     placeholder="Student ID  e.g. 2025-0001-A" />
+
+      <div class="demo-box">
+        <h4>Demo Accounts — click to fill</h4>
+        <div class="demo-row clickable" onclick="fillLogin('ADMIN-001','admin123')">
+          <span>Admin</span><span>ADMIN-001 / admin123</span>
+        </div>
+        <div class="demo-row clickable" onclick="fillLogin('REG-001','reg123')">
+          <span>Registrar</span><span>REG-001 / reg123</span>
+        </div>
+        <div class="demo-row"><span>Student</span><span>Use Register page</span></div>
+      </div>
+
+      <input id="loginId"       type="text"     placeholder="Student ID or System ID" />
       <div class="password-wrapper">
         <input id="loginPassword" type="password" placeholder="Password" />
         <button type="button" class="toggle-password" onclick="togglePassword('loginPassword', this)">Show</button>
@@ -27,11 +36,16 @@
       <p id="authMessage"></p>
 
       <hr />
-
-      <p class="small">No account yet? <a href="register.html">Register here</a></p>
+      <p class="small">No student account? <a href="register.html">Register here</a></p>
     </div>
   </div>
 
   <script src="script.js"></script>
+  <script>
+    function fillLogin(id, pass) {
+      document.getElementById('loginId').value = id;
+      document.getElementById('loginPassword').value = pass;
+    }
+  </script>
 </body>
 </html>
