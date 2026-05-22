@@ -69,6 +69,75 @@ const LS_CURRENT  = "cs_currentUser";
 const LS_REQUESTS = "cs_pendingRequests";
 const LS_COURSES  = "cs_courses";
 const LS_ENROLLS  = "cs_enrollments";
+/* ── LocalStorage Database Functions ───────────────── */
+
+function saveToDatabase() {
+  try {
+    // Save students with their course codes (not object references)
+    const studentsData = students.map(s => ({
+      name: s.name,
+      enrolledCourses: s.enrolledCourses.map(c => c.code)
+    }));
+
+    // Save enrollments with student names and course codes
+    const enrollmentsData = enrollments.map(e => ({
+      studentName: e.student.name,
+      courseCode: e.course.code,
+      grade: e.grade
+    }));
+
+    localStorage.setItem("cs_students", JSON.stringify(studentsData));
+    localStorage.setItem("cs_enrollments", JSON.stringify(enrollmentsData));
+    
+    console.log("✓ Data saved to localStorage");
+  } catch (error) {
+    console.error("Error saving to localStorage:", error);
+  }
+}
+
+function loadFromDatabase() {
+  try {
+    // Load students
+    const studentsData = JSON.parse(localStorage.getItem("cs_students") || "[]");
+    
+    studentsData.forEach(data => {
+      const student = new Student(data.name);
+      
+      // Re-link course objects
+      data.enrolledCourses.forEach(courseCode => {
+        const course = findCourse(courseCode);
+        if (course) {
+          student.enrolledCourses.push(course);
+          if (!course.students.includes(student)) {
+            course.students.push(student);
+          }
+        }
+      });
+      
+      students.push(student);
+    });
+
+    // Load enrollments
+    const enrollmentsData = JSON.parse(localStorage.getItem("cs_enrollments") || "[]");
+    
+    enrollmentsData.forEach(data => {
+      const student = findStudent(data.studentName);
+      const course = findCourse(data.courseCode);
+      
+      if (student && course) {
+        const enrollment = new Enrollment(student, course);
+        enrollment.grade = data.grade;
+        enrollments.push(enrollment);
+      }
+    });
+
+    console.log("✓ Data loaded from localStorage");
+    console.log(`  Students: ${students.length}`);
+    console.log(`  Enrollments: ${enrollments.length}`);
+  } catch (error) {
+    console.error("Error loading from localStorage:", error);
+  }
+}
 
 /* ── Helpers ──────────────────────────────────────── */
 
@@ -483,18 +552,14 @@ function renderAllEnrollments() {
     byStudent[e.studentId].courses.push(e);
   });
 
-  Object.values(byStudent).forEach(s => {
-    const li = document.createElement("li");
-    li.className = "student-item";
-    const rows = s.courses.map(c => {
-      const g = c.grade !== null ? ` (Grade: ${c.grade})` : "";
-      return `${c.courseCode}${g}`;
-    }).join(", ");
-    li.innerHTML = `
-      <div class="student-title">${s.name} <span style="font-size:.78rem;opacity:.6">${s.id}</span></div>
-      <div class="student-meta">${rows}</div>`;
-    list.appendChild(li);
-  });
+  course.addStudent(student);
+  enrollments.push(new Enrollment(student, course));
+  
+  saveToDatabase(); // Save to localStorage
+  
+  setMessage(`✓ ${student.name} enrolled in ${course.code}.`, "#86efac");
+  renderCourses();
+  renderStudents();
 }
 
 /* ── Stats ────────────────────────────────────────── */
@@ -631,6 +696,7 @@ function renderMyRequests() {
 /* ── Init ─────────────────────────────────────────── */
 
 (function init() {
+  loadFromDatabase();  // Load data from localStorage first
   syncUserUI();
   renderCourses();
   renderStats();
