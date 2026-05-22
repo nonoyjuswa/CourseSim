@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CourseSim – Registrar</title>
+  <title>CourseSim – Admin</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,48 +16,48 @@
         </div>
         <nav class="nav">
           <a id="navLogout" href="index.html">Login</a>
-          <a class="active" href="enrollments.html">Requests</a>
-          <a href="grades.html">Grades</a>
+          <a class="active" href="admin.html">Courses</a>
         </nav>
       </div>
       <div class="user-card">
         <div class="avatar" id="sidebarAvatar">?</div>
         <div>
-          <h3 id="sidebarName">Registrar</h3>
+          <h3 id="sidebarName">Admin</h3>
           <p  id="sidebarId">ID</p>
-          <span class="role-pill registrar" id="sidebarRole"></span>
+          <span class="role-pill admin" id="sidebarRole"></span>
         </div>
       </div>
     </aside>
 
     <main class="main">
       <header class="hero">
-        <h2>Enrollment Requests</h2>
-        <p>Review and act on student enrollment and drop requests.</p>
+        <h2>Course Management</h2>
+        <p>Add or remove courses from the catalog. Cannot remove courses with active enrollments.</p>
       </header>
 
       <section class="stats">
         <div class="card"><h3 id="studentCount">0</h3><p>Total Students</p></div>
         <div class="card"><h3 id="courseCount">0</h3><p>Total Courses</p></div>
         <div class="card"><h3 id="enrollCount">0</h3><p>Active Enrollments</p></div>
-        <div class="card"><h3 id="pendingCount">0</h3><p>Pending Requests</p></div>
+        <div class="card"><h3 id="fullCount">0</h3><p>Full Courses</p></div>
       </section>
 
       <section class="panels">
         <div class="panel">
-          <h3>Pending Requests</h3>
-          <ul id="requestList"></ul>
+          <h3>Add New Course</h3>
+          <div class="form-grid">
+            <input id="newCode"     type="text"   placeholder="Course code (e.g. ICT 115)" />
+            <input id="newCapacity" type="number" placeholder="Capacity" min="1" />
+            <input id="newTitle"    type="text"   placeholder="Course title" class="full" />
+            <input id="newPrereq"   type="text"   placeholder="Prerequisite code (optional)" class="full" />
+          </div>
+          <button onclick="adminAddCourse()">Add Course</button>
+          <p id="message"></p>
         </div>
-        <div class="panel">
-          <h3>Request History</h3>
-          <ul id="historyList"></ul>
-        </div>
-      </section>
 
-      <section class="panels" style="margin-top:18px">
-        <div class="panel panel-full">
-          <h3>All Enrolled Students</h3>
-          <ul id="allEnrollList"></ul>
+        <div class="panel">
+          <h3>Course Catalog</h3>
+          <ul id="adminCourseList"></ul>
         </div>
       </section>
     </main>
@@ -67,8 +67,8 @@
   <script>
     (function() {
       const user = getCurrentUser();
-      if (!user || user.role !== "registrar") { window.location.href = "index.html"; }
-      document.getElementById("sidebarRole").className = "role-pill registrar";
+      if (!user || user.role !== "admin") { window.location.href = "index.html"; }
+      document.getElementById("sidebarRole").className = "role-pill admin";
     })();
   </script>
 </body>
