@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CourseSim – Courses</title>
+  <title>CourseSim – My Requests</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,11 +14,11 @@
           <div class="logo">CE</div>
           <div><h1>CourseSim</h1><p>Student Portal</p></div>
         </div>
-        <nav class="nav" id="sidebarNav">
+        <nav class="nav">
           <a id="navLogout" href="index.html">Login</a>
-          <a class="active" href="courses.html">Courses</a>
+          <a href="courses.html">Courses</a>
           <a href="my-enrollments.html">My Enrollments</a>
-          <a href="my-requests.html">My Requests</a>
+          <a class="active" href="my-requests.html">My Requests</a>
         </nav>
       </div>
       <div class="user-card">
@@ -33,22 +33,14 @@
 
     <main class="main">
       <header class="hero">
-        <h2>Courses</h2>
-        <p>Browse available courses and submit enroll or drop requests.</p>
+        <h2>My Requests</h2>
+        <p>Track the status of your enrollment and drop requests.</p>
       </header>
-
-      <section class="stats">
-        <div class="card"><h3 id="studentCount">0</h3><p>Total Students</p></div>
-        <div class="card"><h3 id="courseCount">0</h3><p>Total Courses</p></div>
-        <div class="card"><h3 id="enrollCount">0</h3><p>Active Enrollments</p></div>
-        <div class="card"><h3 id="fullCount">0</h3><p>Full Courses</p></div>
-      </section>
 
       <section class="panels">
         <div class="panel panel-full">
-          <h3>Course List</h3>
-          <ul id="courseList"></ul>
-          <p id="message" style="margin-top:12px"></p>
+          <h3>Request History</h3>
+          <ul id="myRequestList"></ul>
         </div>
       </section>
     </main>
@@ -58,13 +50,7 @@
   <script>
     (function() {
       const user = getCurrentUser();
-      if (!user) { window.location.href = "index.html"; return; }
-      // Adjust nav per role
-      if (user.role === "admin") {
-        window.location.href = "admin.html";
-      } else if (user.role === "registrar") {
-        window.location.href = "enrollments.html";
-      }
+      if (!user || user.role !== "student") { window.location.href = "index.html"; }
       document.getElementById("sidebarRole").className = "role-pill " + user.role;
     })();
   </script>
